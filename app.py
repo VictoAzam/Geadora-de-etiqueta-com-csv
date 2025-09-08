@@ -34,7 +34,7 @@ import json
 ETIQUETA_LARGURA = 9.9 * cm
 ETIQUETA_ALTURA = 2.54 * cm
 MARGEM_ESQUERDA = 0.6 * cm
-MARGEM_SUPERIOR = 1.6 * cm
+MARGEM_SUPERIOR = 1.2 * cm
 COLUNAS = 2
 LINHAS = 10
 
@@ -47,7 +47,7 @@ config_etiquetas = {
     'largura': 9.9,
     'altura': 2.54,
     'margem_esquerda': 0.6,
-    'margem_superior': 1.6,
+    'margem_superior': 1.2,
     'colunas': 2,
     'linhas': 10,
     'espacamento_horizontal': 0.1,
@@ -162,8 +162,8 @@ def gerar_pdf_etiquetas(csv_path, pdf_path):
                 y = altura_pagina - MARGEM_SUPERIOR - row * (ETIQUETA_ALTURA + ESPACAMENTO_VERTICAL)
 
                 # --- Desenha o conteúdo da etiqueta ---
-                texto_x = x + 0.3 * cm
-                texto_y = y - 0.6 * cm
+                texto_x = x + 0.2 * cm  # Margem interna menor
+                texto_y = y - 0.3 * cm  # Margem superior interna menor
 
                 texto = c.beginText(texto_x, texto_y)
                 texto.setFont("Helvetica", 8)
@@ -493,7 +493,7 @@ class App:
         
         # Margem superior
         tk.Label(margin_frame, text="Margem superior:", font=("Arial", 10), bg="#ffffff").grid(row=row, column=0, sticky="w", padx=(0, 10), pady=5)
-        self.margem_sup_var = tk.StringVar(value="1.6")
+        self.margem_sup_var = tk.StringVar(value="1.2")
         margem_sup_entry = tk.Entry(margin_frame, textvariable=self.margem_sup_var, width=10)
         margem_sup_entry.grid(row=row, column=1, sticky="w", pady=5)
         tk.Label(margin_frame, text="cm", font=("Arial", 10), bg="#ffffff").grid(row=row, column=2, sticky="w", padx=(5, 0), pady=5)
@@ -684,7 +684,7 @@ class App:
             self.largura_var.set(pattern_data.get('largura', '9.9'))
             self.altura_var.set(pattern_data.get('altura', '2.54'))
             self.margem_esq_var.set(pattern_data.get('margem_esquerda', '0.6'))
-            self.margem_sup_var.set(pattern_data.get('margem_superior', '1.6'))
+            self.margem_sup_var.set(pattern_data.get('margem_superior', '1.2'))
             self.esp_horiz_var.set(pattern_data.get('espacamento_horizontal', '0.1'))
             self.esp_vert_var.set(pattern_data.get('espacamento_vertical', '0'))
             
@@ -755,7 +755,7 @@ class App:
         self.largura_var.set("9.9")
         self.altura_var.set("2.54")
         self.margem_esq_var.set("0.6")
-        self.margem_sup_var.set("1.6")
+        self.margem_sup_var.set("1.2")
         self.esp_horiz_var.set("0.1")
         self.esp_vert_var.set("0")
         self.apply_custom_settings()

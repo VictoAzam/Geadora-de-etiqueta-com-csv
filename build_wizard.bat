@@ -13,8 +13,14 @@
 
 echo.
 echo ===============================================
-echo     GERADOR DE ETIQUETAS - BUILD WIZARD
+echo     GERADOR DE ETIQUETAS - BUILD WIZARD V2
+echo              INSTALAÇÃO INTELIGENTE
 echo ===============================================
+echo.
+echo NOVA ESTRATÉGIA:
+echo + Usuario instala Python separadamente (mais confiável)
+echo + Instalador só cuida das dependências (mais rápido)
+echo + Processo simplificado sem problemas de conexão
 echo.
 
 :: Verifica se NSIS está instalado
@@ -77,14 +83,19 @@ if %ERRORLEVEL% EQU 0 (
     echo O instalador wizard foi criado com sucesso:
     echo   Instalador_Gerador_Etiquetas_Wizard_v1.0.exe
     echo.
-    echo Recursos do instalador:
-    echo   ✓ Interface wizard moderna
-    echo   ✓ Download automático do Python
-    echo   ✓ Instalação automática de dependências
-    echo   ✓ Criação de atalhos
-    echo   ✓ Desinstalador completo
+    echo NOVA ABORDAGEM - Recursos do instalador:
+    echo   ✓ Verifica se Python está instalado
+    echo   ✓ Instala apenas pandas e reportlab via pip
+    echo   ✓ Processo rápido e confiável (sem download)
+    echo   ✓ Tamanho pequeno (~5MB vs 70+MB)
+    echo   ✓ Funciona sem conexão com internet
     echo.
-    echo Teste o instalador em um computador sem Python!
+    echo INSTRUÇÕES PARA O USUÁRIO:
+    echo   1. Instalar Python primeiro (python.org)
+    echo   2. Marcar 'Add Python to PATH' na instalação
+    echo   3. Executar este instalador
+    echo.
+    echo Veja o arquivo GUIA_INSTALACAO_INTELIGENTE.md para detalhes!
     echo.
 ) else (
     echo.

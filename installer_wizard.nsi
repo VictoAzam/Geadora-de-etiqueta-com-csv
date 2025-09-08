@@ -46,14 +46,14 @@ RequestExecutionLevel admin
 
 ; Página de boas-vindas personalizada
 !define MUI_WELCOMEPAGE_TITLE "Bem-vindo ao ${PRODUCT_NAME}!"
-!define MUI_WELCOMEPAGE_TEXT "Este assistente irá guiá-lo através da instalação do ${PRODUCT_NAME}.$\r$\n$\r$\nEste aplicativo permite gerar etiquetas profissionais em PDF a partir de arquivos CSV/TXT/TSV.$\r$\n$\r$\nClique em Avançar para continuar."
+!define MUI_WELCOMEPAGE_TEXT "Este assistente irá instalar o ${PRODUCT_NAME} em seu computador.$\r$\n$\r$\n📋 PRÉ-REQUISITO: Python 3.8+ deve estar instalado$\r$\n$\r$\nSe você não tem Python instalado:$\r$\n1. Baixe em: https://python.org$\r$\n2. Instale marcando 'Add to PATH'$\r$\n3. Reinicie e execute este instalador novamente$\r$\n$\r$\nEste instalador irá verificar o Python e instalar apenas as dependências necessárias.$\r$\n$\r$\nClique em Avançar para continuar."
 
 ; Página de licença
 !define MUI_LICENSEPAGE_TEXT_TOP "Por favor, leia os termos de uso antes de continuar com a instalação."
 !define MUI_LICENSEPAGE_TEXT_BOTTOM "Se você aceitar os termos do acordo, clique em 'Aceito' para continuar. Você deve aceitar o acordo para instalar o ${PRODUCT_NAME}."
 
 ; Página de componentes personalizada
-!define MUI_COMPONENTSPAGE_TEXT_TOP "Selecione os componentes que você deseja instalar e desmarque os componentes que você não deseja instalar. Clique em Avançar para continuar."
+!define MUI_COMPONENTSPAGE_TEXT_TOP "Selecione os componentes que você deseja instalar.$\r$\n$\r$\n✅ ESTRATÉGIA INTELIGENTE:$\r$\n• Python deve ser instalado separadamente pelo usuário$\r$\n• Este instalador só cuida das dependências Python$\r$\n• Processo mais rápido e confiável"
 
 ; Página de instalação
 !define MUI_INSTFILESPAGE_FINISHHEADER_TEXT "Instalação Concluída"
@@ -61,7 +61,7 @@ RequestExecutionLevel admin
 
 ; Página de finalização
 !define MUI_FINISHPAGE_TITLE "Instalação do ${PRODUCT_NAME} Concluída"
-!define MUI_FINISHPAGE_TEXT "O ${PRODUCT_NAME} foi instalado com sucesso em seu computador.$\r$\n$\r$\nClique em Concluir para fechar este assistente."
+!define MUI_FINISHPAGE_TEXT "O ${PRODUCT_NAME} foi instalado com sucesso em seu computador.$\r$\n$\r$\n✅ Aplicativo instalado$\r$\n✅ Dependências Python configuradas$\r$\n✅ Atalhos criados$\r$\n$\r$\nClique em Concluir para fechar este assistente."
 !define MUI_FINISHPAGE_RUN "$INSTDIR\Gerador_Etiquetas.exe"
 !define MUI_FINISHPAGE_RUN_TEXT "Executar o ${PRODUCT_NAME}"
 !define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\README.txt"
@@ -120,104 +120,79 @@ Function .onInit
 FunctionEnd
 
 Function CheckPython
-    ; Verifica se Python está instalado
+    ; Verifica se Python está instalado e acessível
     DetailPrint "Verificando instalação do Python..."
     
-    ; Tenta Python 3.8+
+    ; Tenta Python direto
     nsExec::ExecToStack 'python --version'
     Pop $0
     Pop $1
     
     ${If} $0 == 0
-        DetailPrint "Python encontrado: $1"
+        DetailPrint "✅ Python encontrado: $1"
         StrCpy $PythonInstalled "1"
         StrCpy $PythonPath "python"
-    ${Else}
-        ; Tenta py launcher
-        nsExec::ExecToStack 'py --version'
-        Pop $0
-        Pop $1
-        
-        ${If} $0 == 0
-            DetailPrint "Python encontrado via py launcher: $1"
-            StrCpy $PythonInstalled "1"
-            StrCpy $PythonPath "py"
-        ${Else}
-            DetailPrint "Python não encontrado no sistema"
-            StrCpy $PythonInstalled "0"
-        ${EndIf}
+        Return
     ${EndIf}
-FunctionEnd
-
-Function DownloadPython
-    DetailPrint "Baixando Python 3.11.7..."
     
-    ; Cria diretório temporário
-    GetTempFileName $TempDir
-    Delete $TempDir
-    CreateDirectory $TempDir
-    
-    ; URL do Python 3.11.7 (64-bit)
-    StrCpy $1 "$TempDir\python-installer.exe"
-    NSISdl::download "https://www.python.org/ftp/python/3.11.7/python-3.11.7-amd64.exe" $1
-    
+    ; Tenta py launcher
+    nsExec::ExecToStack 'py --version'
     Pop $0
-    ${If} $0 == "success"
-        DetailPrint "Download do Python concluído com sucesso"
-    ${Else}
-        DetailPrint "Erro no download do Python: $0"
-        MessageBox MB_OK|MB_ICONSTOP "Erro ao baixar o Python. Verifique sua conexão com a internet e tente novamente."
-        Abort
-    ${EndIf}
-FunctionEnd
-
-Function InstallPython
-    DetailPrint "Instalando Python..."
-    
-    ; Instala Python silenciosamente
-    ExecWait '"$TempDir\python-installer.exe" /quiet InstallAllUsers=1 PrependPath=1 Include_test=0' $0
+    Pop $1
     
     ${If} $0 == 0
-        DetailPrint "Python instalado com sucesso"
+        DetailPrint "✅ Python encontrado via py launcher: $1"
         StrCpy $PythonInstalled "1"
-        StrCpy $PythonPath "python"
-    ${Else}
-        DetailPrint "Erro na instalação do Python (código: $0)"
-        MessageBox MB_OK|MB_ICONSTOP "Erro na instalação do Python. Tente instalar manualmente."
-        Abort
+        StrCpy $PythonPath "py"
+        Return
     ${EndIf}
     
-    ; Limpa arquivos temporários
-    Delete "$TempDir\python-installer.exe"
-    RMDir $TempDir
+    ; Python não encontrado
+    DetailPrint "❌ Python não encontrado no sistema"
+    StrCpy $PythonInstalled "0"
+    
+    ; Mostra mensagem de erro com instruções
+    MessageBox MB_OK|MB_ICONSTOP "⚠️ PYTHON NÃO ENCONTRADO$\r$\n$\r$\nPara usar este aplicativo, você precisa instalar Python primeiro:$\r$\n$\r$\n1. Acesse: https://python.org/downloads$\r$\n2. Baixe Python 3.8 ou superior$\r$\n3. Durante a instalação, marque 'Add Python to PATH'$\r$\n4. Reinicie o computador$\r$\n5. Execute este instalador novamente$\r$\n$\r$\nA instalação será cancelada agora."
+    
+    Abort
 FunctionEnd
 
 Function InstallDependencies
-    DetailPrint "Instalando dependências Python..."
+    DetailPrint "📦 Instalando dependências Python..."
+    
+    ; Atualiza pip primeiro
+    DetailPrint "Atualizando pip..."
+    nsExec::ExecToStack '$PythonPath -m pip install --upgrade pip'
+    Pop $0
+    Pop $1
     
     ; Instala pandas
-    DetailPrint "Instalando pandas..."
+    DetailPrint "📊 Instalando pandas..."
     nsExec::ExecToStack '$PythonPath -m pip install pandas'
     Pop $0
     Pop $1
     
     ${If} $0 == 0
-        DetailPrint "pandas instalado com sucesso"
+        DetailPrint "✅ pandas instalado com sucesso"
     ${Else}
-        DetailPrint "Aviso: Erro ao instalar pandas"
+        DetailPrint "⚠️ Aviso: Erro ao instalar pandas"
+        MessageBox MB_OK|MB_ICONEXCLAMATION "Aviso: Falha ao instalar pandas.$\r$\nVocê pode instalar manualmente depois com:$\r$\npip install pandas"
     ${EndIf}
     
     ; Instala reportlab
-    DetailPrint "Instalando reportlab..."
+    DetailPrint "📄 Instalando reportlab..."
     nsExec::ExecToStack '$PythonPath -m pip install reportlab'
     Pop $0
     Pop $1
     
     ${If} $0 == 0
-        DetailPrint "reportlab instalado com sucesso"
+        DetailPrint "✅ reportlab instalado com sucesso"
     ${Else}
-        DetailPrint "Aviso: Erro ao instalar reportlab"
+        DetailPrint "⚠️ Aviso: Erro ao instalar reportlab"
+        MessageBox MB_OK|MB_ICONEXCLAMATION "Aviso: Falha ao instalar reportlab.$\r$\nVocê pode instalar manualmente depois com:$\r$\npip install reportlab"
     ${EndIf}
+    
+    DetailPrint "🎉 Instalação de dependências concluída!"
 FunctionEnd
 
 ; ===============================================
@@ -254,19 +229,14 @@ Section "Arquivos Principais" SecMain
     WriteUninstaller "$INSTDIR\uninst.exe"
 SectionEnd
 
-Section "Python e Dependências" SecPython
-    ; Verifica Python
+Section "Dependências Python" SecPython
+    ; Verifica se Python está instalado
     Call CheckPython
     
-    ${If} $PythonInstalled == "0"
-        DetailPrint "Python não encontrado. Iniciando download..."
-        Call DownloadPython
-        Call InstallPython
-    ${Else}
-        DetailPrint "Python já está instalado"
-    ${EndIf}
+    ; Como chegamos até aqui, Python está instalado
+    DetailPrint "✅ Python encontrado no sistema"
     
-    ; Instala dependências sempre (garante versões atualizadas)
+    ; Instala apenas as dependências
     Call InstallDependencies
 SectionEnd
 
@@ -287,7 +257,7 @@ SectionEnd
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
     !insertmacro MUI_DESCRIPTION_TEXT ${SecMain} "Arquivos principais do aplicativo (obrigatório)"
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecPython} "Instala Python e dependências necessárias automaticamente"
+    !insertmacro MUI_DESCRIPTION_TEXT ${SecPython} "Instala pandas e reportlab via pip (requer Python pré-instalado)"
     !insertmacro MUI_DESCRIPTION_TEXT ${SecShortcuts} "Cria atalhos no Desktop e Menu Iniciar"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
