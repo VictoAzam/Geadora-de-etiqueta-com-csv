@@ -23,19 +23,26 @@ echo + Instalador só cuida das dependências (mais rápido)
 echo + Processo simplificado sem problemas de conexão
 echo.
 
-:: Verifica se NSIS está instalado
-where makensis >nul 2>nul
-if %ERRORLEVEL% NEQ 0 (
-    echo [ERRO] NSIS não encontrado no PATH!
-    echo.
-    echo Por favor:
-    echo 1. Baixe o NSIS em: https://nsis.sourceforge.io/Download
-    echo 2. Instale o NSIS
-    echo 3. Adicione o NSIS ao PATH do sistema
-    echo 4. Reinicie o prompt de comando
-    echo.
-    pause
-    exit /b 1
+::  Verifica se NSIS está instalado
+set NSIS_PATH="C:\Program Files (x86)\NSIS\makensis.exe"
+if exist %NSIS_PATH% (
+    echo [INFO] NSIS encontrado em: %NSIS_PATH%
+) else (
+    where makensis >nul 2>nul
+    if %ERRORLEVEL% NEQ 0 (
+        echo [ERRO] NSIS não encontrado no PATH!
+        echo.
+        echo Por favor:
+        echo 1. Baixe o NSIS em: https://nsis.sourceforge.io/Download
+        echo 2. Instale o NSIS
+        echo 3. Adicione o NSIS ao PATH do sistema
+        echo 4. Reinicie o prompt de comando
+        echo.
+        pause
+        exit /b 1
+    ) else (
+        set NSIS_PATH=makensis
+    )
 )
 
 echo [INFO] Verificando arquivos necessários...
@@ -72,7 +79,7 @@ echo [INFO] Compilando instalador wizard...
 echo.
 
 :: Compila o instalador
-makensis /V2 installer_wizard.nsi
+%NSIS_PATH% /V2 installer_wizard.nsi
 
 if %ERRORLEVEL% EQU 0 (
     echo.
