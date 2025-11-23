@@ -1,2 +1,106 @@
+# ===============================================
+# 🏷️ GERADOR DE ETIQUETAS - GITIGNORE
+# ===============================================
+
+# Ambientes virtuais Python
 .venv/
-.venv/
+venv/
+env/
+ENV/
+.env
+
+# Arquivos Python compilados
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribuição / empacotamento
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Testes
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sistema operacional
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.tmp
+*.temp
+~*
+
+# Arquivos de configuração local
+config.local.json
+settings.local.json
+
+# Arquivos de teste do usuário
+test_data/
+exemplos_teste/
+*.csv
+*.txt
+*.tsv
+
+# PDFs gerados (opcional - descomente se não quiser versionar)
+# *.pdf
+
+# Padrões de usuário (opcional - descomente se quiser manter privado)
+# padroes/*.json
+
+# Instaladores compilados
+*.exe
+!Gerador_Etiquetas.exe
+!Instalador_*.exe
+
+# Arquivos NSIS temporários
+*.nsi~
+
+# Ícones gerados automaticamente
+icon.ico
